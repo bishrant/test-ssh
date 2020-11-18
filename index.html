@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <!--
+  ArcGIS API for JavaScript, https://js.arcgis.com
+  For more information about the labels-basic sample, read the original sample description at developers.arcgis.com.
+  https://developers.arcgis.com/javascript/latest/sample-code/labels-basic/index.html
+  -->
+<title>
+      Add labels to a FeatureLayer | Sample | ArcGIS API for JavaScript 4.17
+    </title>
+
+    <link  rel="stylesheet"   href="https://js.arcgis.com/4.17/esri/themes/light-green/main.css"/>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+      }
+    </style>
+
+    <script src="https://js.arcgis.com/4.17/"></script>
+
+    <script>
+      require([
+        "esri/WebMap",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/Search"
+      ], function (WebMap, MapView, FeatureLayer, Search) {
+        const getT = (a)=> {
+          console.log(a);
+          return 10;
+        }
+        var cls = [
+          {val: 'San Augustine', r: 10},
+          {val: 'Waller', r: 100},
+        ];
+
+
+        var c = cls.map(function(cc){
+          return {
+          // autocasts as new LabelClass()
+          symbol: {
+            type: "text", // autocasts as new TextSymbol()
+            color: "green",
+            angle: cc.r,
+            font: {
+              // autocast as new Font()
+              family: "Playfair Display",
+              size: 12,
+              weight: "bold"
+            }
+          },
+          labelPlacement: "above-center",
+          where: "NAME = '"+cc.val +"'",
+          labelExpressionInfo: {
+            expression: "$feature.NAME"
+          }
+        };
+        })
+       
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: new WebMap({
+            portalItem: {
+              // autocasts as new PortalItem
+              id: "372b7caa8fe340b0a6300df93ef18a7e"
+            },
+            layers: [
+              new FeatureLayer({
+                url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/EconomicImpact/EcoImpact2020FeatureService2/FeatureServer/0',
+                labelingInfo: c,
+              })
+            ]
+          }),
+          center: [-95.925, 30.2501],
+          zoom: 7,
+
+        });
+
+        // Adds the search widget to the top right corner of the view
+        view.ui.add(
+          new Search({
+            view: view
+          }),
+          "top-right"
+        );
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
